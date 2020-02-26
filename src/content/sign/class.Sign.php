@@ -3,7 +3,7 @@
 require_once(SRC_PAGE.'/content/users/class.User.php');
 
 class Sign extends User {
-    public function signUp($name, $email, $phone, $password, $rePassword) {
+    public function signUp($name, $email = null, $phone = null, $password, $rePassword) {
         global $pdo;
         global $response;
 
@@ -61,8 +61,12 @@ class Sign extends User {
             return false;
         }
 
+        $this->setUser($name);
+
+        $userInfos = $this->showInfos();
+
         $response->success = true;
-        $response->content = ["message" => "User created successfully!"]; 
+        $response->content = ["message" => "User created successfully!", "user" => $userInfos]; 
 
         return true;
     }
