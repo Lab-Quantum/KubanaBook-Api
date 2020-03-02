@@ -3,6 +3,47 @@
 require_once(SRC_PAGE.'/content/users/class.User.php');
 
 class Sign extends User {
+    public function signIn($user, $password) {
+        global $pdo;
+        global $response;
+
+        $sql = "SELECT `id`, `name`, `password` 
+            FROM `users` 
+            WHERE `name` = ? or `email` = ? or `phone` = ?";
+
+        $select = $pdo->prepare($sql);
+        $select->bindParam(1, $user);
+        $select->bindParam(2, $user);
+        $select->bindParam(3, $user);
+        $select->execute();
+
+        $userResult = $select->fetch();
+
+        if(isset($userResult->id)) {
+            $response->success = false;
+            $response->content = ["message" => "User not found"]; 
+
+            return false;
+        } elseif(!password_verify($password, $userResult->password)) {
+            $response->success = false;
+            $response->content = ["message" => "User and password doesn't match"]; 
+
+            return false;
+        } else {
+            $this->setUser($userResult->id);
+
+            $token = $this->generateHashToken($userResult->id);
+            $userInfos = $this->showInfos();
+
+            $response->success = true;
+            $response->content = [
+                "message" => "Successfully sign in",
+                "user"  => $userInfos,
+                "token" => $token
+            ];
+        }
+    }
+
     public function signUp($name, $email = null, $phone = null, $password, $rePassword) {
         global $pdo;
         global $response;
@@ -69,5 +110,20 @@ class Sign extends User {
         $response->content = ["message" => "User created successfully!", "user" => $userInfos]; 
 
         return true;
+    }
+
+    private function generateHashToken($id) {
+        $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+        $payload = json_encode(['id' => $id]);
+
+        $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+        $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+
+        $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, 'teste', true);
+        $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+
+        $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
+
+        return $jwt;
     }
 }

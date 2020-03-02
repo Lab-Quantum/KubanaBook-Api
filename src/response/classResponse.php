@@ -12,5 +12,6 @@ class Response {
             "success" => $success,
             "content" => $content
         ], JSON_NUMERIC_CHECK);
+        die();
     }
 }
