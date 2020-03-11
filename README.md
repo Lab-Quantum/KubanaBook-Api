@@ -17,5 +17,5 @@ And config the [connection.php](connection.php) file.
 
 ## Sections && Exemple Posts
 
-* [Users](src/content/user/README.md)
+* [Users](src/content/users/README.md)
 * [Sign](src/content/sign/README.md)
