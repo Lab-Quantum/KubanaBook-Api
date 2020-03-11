@@ -19,7 +19,7 @@ class Sign extends User {
 
         $userResult = $select->fetch();
 
-        if(isset($userResult->id)) {
+        if(!isset($userResult->id)) {
             $response->success = false;
             $response->content = ["message" => "User not found"]; 
 
@@ -51,6 +51,11 @@ class Sign extends User {
         if($password != $rePassword) {
             $response->success = false;
             $response->content = ["message" => "Passwords doesn't match!"]; 
+
+            return false;
+        } if(strlen($name) < 3) {
+            $response->success = false;
+            $response->content = ["message" => "The name must have at last 3 characters"]; 
 
             return false;
         }
@@ -110,20 +115,5 @@ class Sign extends User {
         $response->content = ["message" => "User created successfully!", "user" => $userInfos]; 
 
         return true;
-    }
-
-    private function generateHashToken($id) {
-        $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
-        $payload = json_encode(['id' => $id]);
-
-        $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
-        $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
-
-        $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, 'teste', true);
-        $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
-
-        $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
-
-        return $jwt;
     }
 }
