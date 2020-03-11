@@ -80,8 +80,10 @@ class User {
         return $token;
     }
 
-    public function verifyToken($token) {
+    public function verifyToken($token = null) {
         global $response;
+
+        $token = $token ? $token : $_SESSION["token"];
 
         $token = explode(".", $token);
 

@@ -34,6 +34,8 @@ class Sign extends User {
 
             $token = $this->generateHashToken($userResult->id);
             $userInfos = $this->showInfos();
+            
+            $_SESSION['token'] = $token;
 
             $response->success = true;
             $response->content = [
