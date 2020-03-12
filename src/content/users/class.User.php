@@ -82,9 +82,8 @@ class User {
 
     public function verifyToken($token = null) {
         global $response;
-        $headers = apache_request_headers();
 
-        $token = $token ? $token : str_replace("Bearer ", "", $headers["Authorization"]);
+        $token = $token ? $token : $_SESSION['token'];
 
         $token = explode(".", $token);
 
