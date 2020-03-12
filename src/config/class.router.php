@@ -9,8 +9,11 @@ class Router {
         if(file_exists($path)) {
             require_once($path);
             return true;
-        } 
+        }
 
+        $response->success = false;
+        $response->message = ["message" => "Invalid action!"];
+        
         return false;
     }
 

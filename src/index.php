@@ -17,9 +17,6 @@ $data = isset($_POST) ? (object) $_POST : json_decode(file_get_contents("php://i
 
 require_once(SRC_PAGE.'/requires.php');
 
-if(!Router::internal($data)) {
-    $response->success = false;
-    $response->message = ["message" => "Invalid action!"];
-}
+Router::internal($data);
 
 $response->sendResponse();
