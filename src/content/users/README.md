@@ -1,20 +1,25 @@
 #### User Verify Token
-    api.post('/', {
-      section: 'users',
-      action: 'verifyToken',
-      token: TOKEN
-    })
+    api.post('/users/verifyToken',
+      {},
+      {
+        Authorization: "Bearer " + TOKEN
+      }
+    )
     
 #### User Check is Admin
-    api.post('/', {
-      section: 'users',
-      action: 'checkAdmin',
-      token: TOKEN
-    })
+    api.post('/users/checkAdmin', 
+      {},
+      {
+        Authorization: "Bearer " + TOKEN
+      }
+    )
     
 #### User Check is a Valid User
-    api.post('/', {
-      section: 'users',
-      action: 'checkUser',
-      token: TOKEN
-    })
+    api.post('/users/checkUser',
+      {},
+      {
+        Authorization: "Bearer " + TOKEN
+      }
+    )
+
+**Make sure that the Authorization is not sending by default.**

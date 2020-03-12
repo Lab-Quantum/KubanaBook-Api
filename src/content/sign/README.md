@@ -1,15 +1,11 @@
 #### Sign In
-    api.post('/', {
-      section: 'sign',
-      action: 'signIn',
+    api.post('/sign/signIn', {
       user: NAME / EMAIL / PHONE,
       password: PASSWORD
     })
     
 #### User Check is Admin
-    api.post('/', {
-      section: 'sign',
-      action: 'signUP',
+    api.post('/sign/signUp', {
       name: NAME,
       email: EMAIL,
       phone: PHONE,
@@ -20,7 +16,4 @@
 *Email or phone can be null*
     
 #### User Check is a Valid User
-    api.post('/', {
-      section: 'sign',
-      action: 'signOut'
-    })
+    api.post('/sign/signOut')

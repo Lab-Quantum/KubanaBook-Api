@@ -15,3 +15,5 @@ class Response {
         die();
     }
 }
+
+$response = new Response();
