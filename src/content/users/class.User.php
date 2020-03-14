@@ -109,4 +109,24 @@ class User {
             return false;
         }
     }
+
+    public function verifyEmail ($email){
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $response->content = ["message" => "Email is valid"];
+            return $email;
+        
+        } else {
+            $response->content = ["message" => "Email is not valid"];
+            return false;  
+        }
+    }
+
+    public function verifyPhone($phone){
+    if(preg_match('/^[0-9]{11}+$/', $phone)){
+        $response->content = ["message" => "Phone number is valid"];
+        } else {
+            $response->content = ["message" => "Phone number is not valid"];
+        }
+    }
+
 }
