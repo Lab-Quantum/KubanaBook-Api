@@ -1,10 +1,11 @@
 <?php
 
 class Router {
-    public function internal($data = object, $path = false) {
+    public function internal($path) {
         global $response;
+        global $data;
 
-        $path = $path ? $path : Router::internalPath();
+        $path = Router::internalPath($path);
 
         if(file_exists($path)) {
             require_once($path);
@@ -17,8 +18,8 @@ class Router {
         return false;
     }
 
-    public function internalPath() {
-        $url = str_replace('/kubanabook/src/', '', $_SERVER["REDIRECT_URL"]);
+    public function internalPath($path) {
+        $url = str_replace('/kubanabook/src/', '', $path);
         $peaces = explode("/", $url);
 
         $path = SRC_PAGE."/content";

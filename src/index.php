@@ -14,11 +14,11 @@ $headers = apache_request_headers();
 define('SRC_PAGE', $_SERVER['DOCUMENT_ROOT']."/kubanabook/src");
 define('IMG_PAGE', $_SERVER['DOCUMENT_ROOT']."/kubanabook/images");
 
-$data = isset($_POST) ? (object) $_POST : json_decode(file_get_contents("php://input"));
+$data = (count($_POST) > 0) ? (object) $_POST : (object) json_decode(file_get_contents("php://input"));
 $data->token = str_replace("Bearer", "", $headers["Authorization"]);
 
 require_once(SRC_PAGE.'/requires.php');
 
-Router::internal($data);
+Router::internal($_SERVER["REDIRECT_URL"]);
 
 $response->sendResponse();
