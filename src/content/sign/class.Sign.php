@@ -62,6 +62,14 @@ class Sign extends User {
             return false;
         }
 
+        if(!empty($email) && !$this->verifyEmail($email)) {
+            return false;
+        }
+
+        if(!empty($phone) && !$this->verifyPhone($phone)) {
+            return false;
+        }
+
         $sql = "SELECT `id`, `name`, `email`, `phone`
             FROM `users`
             WHERE `name` = ? or `email` = ? or `phone` = ?";

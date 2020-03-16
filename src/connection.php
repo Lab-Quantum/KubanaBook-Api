@@ -1,6 +1,6 @@
 <?php
 
-define('DB_SERVER',   '192.168.1.8');
+define('DB_SERVER',   '192.168.0.106');
 define('DB_USER',     'root');
 define('DB_PASSWORD', 'root');
 define('DB_NAME',     'kubanabook');
