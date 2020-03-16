@@ -9,6 +9,52 @@ class User {
     private $active = null;
     private $banned = null;
 
+    protected $fields = array();
+
+    public function __construct($idOrName = null) {
+        if(isset($id)) {
+            $this->setUser($idOrName);
+        }
+
+        $this->fields = [
+            "id" => [
+                "required"  => 0,
+                "editable"  => 0,
+                "type"      => "int"
+            ],
+            "name" => [
+                "required"  => 1,
+                "editable"  => 1,
+                "type"      => "string"
+            ],
+            "role" => [
+                "required"  => 0,
+                "editable"  => 0,
+                "type"      => "int"
+            ],
+            "email" => [
+                "required"  => 0,
+                "editable"  => 1,
+                "type"      => "email"
+            ],
+            "phone" => [
+                "required"  => 0,
+                "editable"  => 1,
+                "type"      => "phone"
+            ],
+            "active" => [
+                "required"  => 0,
+                "editable"  => 0,
+                "type"      => "int"
+            ],
+            "banned" => [
+                "required"  => 0,
+                "editable"  => 0,
+                "type"      => "int"
+            ],
+        ];
+    }
+
     public function setUser($idOrName) {
         global $pdo;
 
@@ -51,10 +97,15 @@ class User {
     }
 
     public function isValidUser() {
+        global $response;
+
         if(isset($this->id) && $this->active == 1 && $this->banned == 0) {
             return true;
         } 
-
+        
+        $response->success = false;
+        $response->content = ["message" => "Is not a valid user!"]; 
+        
         return false;
     }
 
@@ -110,23 +161,43 @@ class User {
         }
     }
 
-    public function verifyEmail ($email){
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $response->content = ["message" => "Email is valid"];
-            return $email;
-        
-        } else {
-            $response->content = ["message" => "Email is not valid"];
-            return false;  
+    public function updateInfos($userInfos) {
+        global $pdo;
+        global $response;
+        unset($userInfos->token);
+
+        $set = "";
+
+        foreach($userInfos as $field => $value) {
+            if($this->fields[$field]["editable"] == 1) {
+                $type = $this->fields[$field]["type"];
+                
+                if(!verify::$type($value)) {
+                    return false;
+                }
+
+                $set .= " ".$field." = '".$value."' ";
+            }
+        }
+
+        $sql = "UPDATE `users` SET ".$set." WHERE `id` = ?";
+
+        try {
+            $update = $pdo->prepare($sql);
+            $update->bindParam(1, $this->id);
+            $update->execute();
+
+            $response->success = true;
+            $response->content = ["message" => "Updated Informations"];
+
+            return true;
+        } catch(PDOException $e) {
+            $error = $e->getMessage();
+
+            $response->success = false;
+            $response->content = ["message" => "Error when trying to update user", "error" => $error];
+
+            return false;
         }
     }
-
-    public function verifyPhone($phone){
-    if(preg_match('/^[0-9]{11}+$/', $phone)){
-        $response->content = ["message" => "Phone number is valid"];
-        } else {
-            $response->content = ["message" => "Phone number is not valid"];
-        }
-    }
-
 }
